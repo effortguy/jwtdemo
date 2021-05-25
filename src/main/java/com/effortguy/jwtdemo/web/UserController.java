@@ -8,11 +8,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class UserController {
 
     private final PasswordEncoder passwordEncoder;
@@ -22,7 +23,10 @@ public class UserController {
     // 회원가입
     @PostMapping("/join")
     public Long join(@RequestBody User user) {
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(User.builder()
+                .email(user.getEmail())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .build());
 
         return savedUser.getId();
     }
